@@ -1,8 +1,10 @@
 import { newKitFromWeb3 } from '@celo/contractkit'
-import jsonInterface from './sale.abi.json'
+import saleAbi from './sale.abi.json'
+import erc20Abi from './erc20.abi.json'
 import Web3 from 'web3'
 
-const saleAddr = "0x8935ad6d507fd1a21C05C3a453F6d07719c0bad7"
+const saleAddr = '0x6eb12b3FB55fe1EB4F34ab8A57Acb67502Af7A94'
+const cusd = '0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1'
 
 let contract
 let accounts
@@ -30,7 +32,7 @@ const connectMetaMask = async function () {
 	balance = (c.cUSD.toNumber()/1000000000000000000).toFixed(2)
   $('#balance').html(balance)
 
-	contract = new kit.web3.eth.Contract(jsonInterface, saleAddr)
+	contract = new kit.web3.eth.Contract(saleAbi, saleAddr)
 	window.contract = contract
   await getProducts()
   renderProducts()
@@ -59,8 +61,28 @@ const getProducts = async function() {
   console.log(products)
 }
 
-var template = $('#template').html();
-Mustache.parse(template);
+async function approve(val) {
+  const cusdContract = new kit.web3.eth.Contract(erc20Abi, cusd)
+  const allowance = await cusdContract
+    .methods
+    .allowance( accounts[0], saleAddr)
+    .call()
+
+  if(parseInt(allowance) >= parseInt(val)) {
+    return true
+  }
+
+  const params = [
+    saleAddr,
+    val
+  ]
+  const result = await cusdContract
+    .methods
+    .approve(...params)
+    .send({ from: accounts[0] })
+  console.log(result)
+  return result
+}
 
 function renderProducts() {
   const rendered = products.map(p => productTemplate(
@@ -105,9 +127,9 @@ function productTemplate(index, productName, imgUrl, productDescription,location
 }
 
 window.addEventListener('load', async () => {
-  $("#loader").show();
+  $('#loader').show();
   connectMetaMask();
-  $("#loader").hide();
+  $('#loader').hide();
 });
 
 
@@ -125,7 +147,34 @@ $('#newProductBtn').click(async function(){
     newLocation,
     newPrice
   ]
-	const result = await contract.methods.submitItem(...params).send({ from: accounts[0] })
+	const result = await contract
+    .methods
+    .submitItem(...params)
+    .send({ from: accounts[0] })
   getProducts
   renderProducts();
+})
+
+$('#productBody').on('click', '.buyBtn', async function(event){
+  const index = $(this).attr('id')
+  $('#loader').show();
+  try {
+    await approve(products[index].price)
+  } catch (e) {
+    alert('Oh no')
+  }
+  $('#loader').hide();
+
+  $('#loader').show();
+  try {
+    const result = await contract
+      .methods
+      .buyItem(index)
+      .send({ from: accounts[0] })
+    console.log(result)
+  } catch (e) {
+    alert('Oh no')
+  }
+  $('#loader').hide();
+  alert('purchased')
 })
