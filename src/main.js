@@ -2,13 +2,16 @@ import { newKitFromWeb3 } from "@celo/contractkit"
 import Web3 from "web3"
 import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
+import BigNumber from "bignumber.js"
 
 const MPContractAddress = "0xf4251cA34E1bd2059d6d4da754Fb7b2B1d12957a"
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
+const ERC20_DECIMALS = 18
 
 let kit
 let contract
 let products = []
+
 
 const connectCeloWallet = async function () {
   if (window.celo) {
@@ -33,7 +36,7 @@ const connectCeloWallet = async function () {
 
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount)
-  const cUSDBalance = totalBalance.cUSD.shiftedBy(-18).toFixed(2)
+  const cUSDBalance = totalBalance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2)
   document.querySelector("#balance").textContent = cUSDBalance
 }
 
@@ -50,7 +53,7 @@ const getProducts = async function () {
         image: p[2],
         description: p[3],
         location: p[4],
-        price: p[5],
+        price: new BigNumber(p[5]).shiftedBy(-ERC20_DECIMALS),
         sold: p[6],
       })
     })
@@ -102,7 +105,7 @@ function productTemplate(_product) {
           <a class="btn btn-lg btn-outline-dark buyBtn fs-6 p-3" id=${
             _product.index
           }>
-            Buy for ${_product.price} cUSD
+            Buy for ${_product.price.toFixed(2)} cUSD
           </a>
         </div>
       </div>
@@ -153,7 +156,11 @@ document
       document.getElementById("newImgUrl").value,
       document.getElementById("newProductDescription").value,
       document.getElementById("newLocation").value,
-      document.getElementById("newPrice").value,
+      new BigNumber(
+        document.getElementById("newPrice").value
+      )
+      .shiftedBy(ERC20_DECIMALS)
+      .toString()
     ]
     notification(`⌛ Adding "${params[0]}"...`)
     try {
