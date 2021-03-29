@@ -33,7 +33,6 @@ const connectCeloWallet = async function () {
 
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount)
-  window.b = totalBalance
   const cUSDBalance = totalBalance.cUSD.shiftedBy(-18).toFixed(2)
   document.querySelector("#balance").textContent = cUSDBalance
 }
