@@ -7,9 +7,22 @@
 				"type": "uint256"
 			}
 		],
-		"name": "buyItem",
+		"name": "buyProduct",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getProductsLength",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -20,51 +33,38 @@
 				"type": "uint256"
 			}
 		],
-		"name": "getItem",
+		"name": "readProduct",
 		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
 			{
 				"internalType": "address payable",
 				"name": "",
 				"type": "address"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "",
-				"type": "uint256"
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			},
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getItemsLength",
-		"outputs": [
+			},
 			{
 				"internalType": "uint256",
 				"name": "",
@@ -78,17 +78,17 @@
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "_productName",
+				"name": "_name",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_imgUrl",
+				"name": "_image",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "_productDescription",
+				"name": "_description",
 				"type": "string"
 			},
 			{
@@ -102,7 +102,7 @@
 				"type": "uint256"
 			}
 		],
-		"name": "submitItem",
+		"name": "writeProduct",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

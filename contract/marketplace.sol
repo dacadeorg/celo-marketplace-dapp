@@ -1,8 +1,7 @@
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity >=0.4.16 <0.9.0;
-/**
- * @title This interface describes the ERC20 functions shared by all Celo Tokens.
- */
+// SPDX-License-Identifier: MIT
+
+pragma solidity >=0.7.0 <0.9.0;
+
 interface IERC20Token {
   function transfer(address, uint256) external returns (bool);
   function approve(address, uint256) external returns (bool);
@@ -11,82 +10,80 @@ interface IERC20Token {
   function balanceOf(address) external view returns (uint256);
   function allowance(address, address) external view returns (uint256);
 
-  // solhint-disable-next-line no-simple-event-func-name
   event Transfer(address indexed from, address indexed to, uint256 value);
   event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-contract MarketPlace {
+contract Marketplace {
 
-    uint itemsLength = 0;
-    address cUsdTokenAddress = 0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1;
+    uint internal productsLength = 0;
+    address internal cUsdTokenAddress = 0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1;
 
-    struct item {
-        string productName;
-        string imgUrl;
-        string productDescription;
+    struct Product {
+        address payable owner;
+        string name;
+        string image;
+        string description;
         string location;
-        address payable creatorAddress;
         uint price;
-        uint productsSold;
+        uint sold;
     }
 
-    mapping (uint => item) items;
+    mapping (uint => Product) internal products;
 
-    function submitItem(
-        string memory _productName, 
-        string memory _imgUrl,
-        string memory _productDescription, 
-        string memory _location,
+    function writeProduct(
+        string memory _name,
+        string memory _image,
+        string memory _description, 
+        string memory _location, 
         uint _price
     ) public {
-        uint _productsSold = 0;
-        items[itemsLength] = item(
-            _productName, 
-            _imgUrl, 
-            _productDescription,
+        uint _sold = 0;
+        products[productsLength] = Product(
+            payable(msg.sender),
+            _name,
+            _image,
+            _description,
             _location,
-            msg.sender,
             _price,
-            _productsSold
+            _sold
         );
-        itemsLength++;
+        productsLength++;
     }
 
-    function buyItem(uint _index) payable public {
-        item storage m = items[_index];
-        require(
-          IERC20Token(cUsdTokenAddress).transferFrom(
-            msg.sender,
-            m.creatorAddress,
-            m.price
-          ),
-          "Transfer of contribution failed"
-        );
-        m.productsSold++;
-    }
-
-    function getItem(uint _index) view public returns (
-        string memory, 
-        string memory,
-        string memory,
-        string memory,
+    function readProduct(uint _index) public view returns (
         address payable,
-        uint,
+        string memory, 
+        string memory, 
+        string memory, 
+        string memory, 
+        uint, 
         uint
     ) {
         return (
-            items[_index].productName, 
-            items[_index].imgUrl, 
-            items[_index].productDescription,
-            items[_index].location, 
-            items[_index].creatorAddress,
-            items[_index].price, 
-            items[_index].productsSold
+            products[_index].owner,
+            products[_index].name, 
+            products[_index].image, 
+            products[_index].description, 
+            products[_index].location, 
+            products[_index].price,
+            products[_index].sold
         );
     }
-
-    function getItemsLength () view public returns (uint) {
-        return (itemsLength);
+    
+    function buyProduct(uint _index) public payable  {
+        require(
+          IERC20Token(cUsdTokenAddress).transferFrom(
+            msg.sender,
+            products[_index].owner,
+            products[_index].price
+          ),
+          "Transfer failed."
+        );
+        products[_index].sold++;
+    }
+    
+    function getProductsLength() public view returns (uint) {
+        return (productsLength);
     }
 }
