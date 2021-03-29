@@ -11,7 +11,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(process.cwd(), "dist"),
-    publicPath: "/"
+    publicPath: ""
   },
 	node: {
    fs: "empty",
