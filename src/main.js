@@ -53,7 +53,7 @@ const getProducts = async function () {
         image: p[2],
         description: p[3],
         location: p[4],
-        price: new BigNumber(p[5]).shiftedBy(-ERC20_DECIMALS),
+        price: new BigNumber(p[5]),
         sold: p[6],
       })
     })
@@ -105,7 +105,7 @@ function productTemplate(_product) {
           <a class="btn btn-lg btn-outline-dark buyBtn fs-6 p-3" id=${
             _product.index
           }>
-            Buy for ${_product.price.toFixed(2)} cUSD
+            Buy for ${_product.price.shiftedBy(-ERC20_DECIMALS).toFixed(2)} cUSD
           </a>
         </div>
       </div>
