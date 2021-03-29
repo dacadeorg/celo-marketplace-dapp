@@ -3,7 +3,7 @@ import Web3 from "web3"
 import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
-const MPContractAddress = "0x500b14026746e37dA096E0A2b31b60432D800241"
+const MPContractAddress = "0xf4251cA34E1bd2059d6d4da754Fb7b2B1d12957a"
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 
 let kit
