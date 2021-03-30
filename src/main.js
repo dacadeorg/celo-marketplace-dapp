@@ -1,24 +1,24 @@
-import { newKitFromWeb3 } from "@celo/contractkit"
 import Web3 from "web3"
+import { newKitFromWeb3 } from "@celo/contractkit"
+import BigNumber from "bignumber.js"
 import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
-import BigNumber from "bignumber.js"
 
-const MPContractAddress = "0xf4251cA34E1bd2059d6d4da754Fb7b2B1d12957a"
-const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 const ERC20_DECIMALS = 18
+const MPContractAddress = "0x178134c92EC973F34dD0dd762284b852B211CFC8"
+const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 
 let kit
 let contract
 let products = []
 
-
 const connectCeloWallet = async function () {
   if (window.celo) {
+    notification("⚠️ Please approve this DApp to use it.")
     try {
-      notification("⚠️ Please approve this DApp to use it.")
       await window.celo.enable()
       notificationOff()
+
       const web3 = new Web3(window.celo)
       kit = newKitFromWeb3(web3)
 
@@ -34,13 +34,22 @@ const connectCeloWallet = async function () {
   }
 }
 
+async function approve(_price) {
+  const cUSDContract = new kit.web3.eth.Contract(erc20Abi, cUSDContractAddress)
+
+  const result = await cUSDContract.methods
+    .approve(MPContractAddress, _price)
+    .send({ from: kit.defaultAccount })
+  return result
+}
+
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount)
   const cUSDBalance = totalBalance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2)
   document.querySelector("#balance").textContent = cUSDBalance
 }
 
-const getProducts = async function () {
+const getProducts = async function() {
   const _productsLength = await contract.methods.getProductsLength().call()
   const _products = []
   for (let i = 0; i < _productsLength; i++) {
@@ -61,15 +70,6 @@ const getProducts = async function () {
   }
   products = await Promise.all(_products)
   renderProducts()
-}
-
-async function approve(_price) {
-  const cUSDContract = new kit.web3.eth.Contract(erc20Abi, cUSDContractAddress)
-
-  const result = await cUSDContract.methods
-    .approve(MPContractAddress, _price)
-    .send({ from: kit.defaultAccount })
-  return result
 }
 
 function renderProducts() {
@@ -95,7 +95,7 @@ function productTemplate(_product) {
         </div>
         <h2 class="card-title fs-4 fw-bold mt-2">${_product.name}</h2>
         <p class="card-text mb-4" style="min-height: 82px">
-          ${_product.description}
+          ${_product.description}             
         </p>
         <p class="card-text mt-4">
           <i class="bi bi-geo-alt-fill"></i>
@@ -121,6 +121,7 @@ function identiconTemplate(_address) {
       scale: 16,
     })
     .toDataURL()
+
   return `
   <div class="rounded-circle overflow-hidden d-inline-block border border-white border-2 shadow-sm m-0">
     <a href="https://alfajores-blockscout.celo-testnet.org/address/${_address}/transactions"
@@ -146,7 +147,7 @@ window.addEventListener("load", async () => {
   await getBalance()
   await getProducts()
   notificationOff()
-})
+});
 
 document
   .querySelector("#newProductBtn")
@@ -156,9 +157,7 @@ document
       document.getElementById("newImgUrl").value,
       document.getElementById("newProductDescription").value,
       document.getElementById("newLocation").value,
-      new BigNumber(
-        document.getElementById("newPrice").value
-      )
+      new BigNumber(document.getElementById("newPrice").value)
       .shiftedBy(ERC20_DECIMALS)
       .toString()
     ]
@@ -174,24 +173,25 @@ document
     getProducts()
   })
 
-document.querySelector("#marketplace").addEventListener("click", async (e) => {
-  if (e.target.className.includes("buyBtn")) {
-    const index = e.target.id
-    notification("⌛ Waiting for payment approval...")
-    try {
-      await approve(products[index].price)
-    } catch (error) {
-      notification(`⚠️ ${error}.`)
+  document.querySelector("#marketplace").addEventListener("click", async (e) => {
+    if (e.target.className.includes("buyBtn")) {
+      const index = e.target.id
+      notification("⌛ Waiting for payment approval...")
+      try {
+        await approve(products[index].price)
+      } catch (error) {
+        notification(`⚠️ ${error}.`)
+      }
+      notification(`⌛ Awaiting payment for "${products[index].name}"...`)
+      try {
+        const result = await contract.methods
+          .buyProduct(index)
+          .send({ from: kit.defaultAccount })
+        notification(`🎉 You successfully bought "${products[index].name}".`)
+        getProducts()
+        getBalance()
+      } catch (error) {
+        notification(`⚠️ ${error}.`)
+      }
     }
-    notification(`⌛ Awaiting payment for "${products[index].name}"...`)
-    try {
-      const result = await contract.methods
-        .buyProduct(index)
-        .send({ from: kit.defaultAccount })
-      notification(`🎉 You successfully bought "${products[index].name}".`)
-      getProducts()
-    } catch (error) {
-      notification(`⚠️ ${error}.`)
-    }
-  }
-})
+  })  
