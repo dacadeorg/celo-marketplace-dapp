@@ -2,14 +2,15 @@
 
 ```
 
-yarn install
-
-```
-or
-
-```
-
 npm install
+
+```
+
+or 
+
+```
+
+yarn install
 
 ```
 
@@ -17,12 +18,19 @@ npm install
 
 ```
 
-node index.js
+npm run dev
+
+```
+
+# Build
+
+```
+
+npm run build
 
 ```
 # Usage
-1. Use Chrome browser.
-2. Install Celo Extension Wallet.
-[Link to Celo Extension Wallet Chrome ](https://chrome.google.com/webstore/detail/celoextensionwallet/kkilomkmpmkbdnfelcpgckmpcaemjcdh)
-3. Create or import Celo wallet.
-4. Interact with DApp.
+1. Install the [CeloExtensionWallet](https://chrome.google.com/webstore/detail/celoextensionwallet/kkilomkmpmkbdnfelcpgckmpcaemjcdh?hl=en) from the google chrome store.
+2. Create a wallet.
+3. Go to [https://celo.org/developers/faucet](https://celo.org/developers/faucet) and get tokens for the alfajores testnet.
+4. Switch to the alfajores testnet in the CeloExtensionWallet.
