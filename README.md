@@ -1,34 +1,3 @@
-# Install
-
-```
-
-npm install
-
-```
-
-or 
-
-```
-
-yarn install
-
-```
-
-# Start
-
-```
-
-npm run dev
-
-```
-
-# Build
-
-```
-
-npm run build
-
-```
 # Usage
 1. Install the [CeloExtensionWallet](https://chrome.google.com/webstore/detail/celoextensionwallet/kkilomkmpmkbdnfelcpgckmpcaemjcdh?hl=en) from the google chrome store.
 2. Create a wallet.
@@ -37,3 +6,27 @@ npm run build
 
 # Preview
 [Marketplace DApp](https://moritzfelipe.github.io/celo-marketplace-dapp/)
+
+# Install
+
+```
+npm install
+```
+
+or 
+
+```
+yarn install
+```
+
+# Start
+
+```
+npm run dev
+```
+
+# Build
+
+```
+npm run build
+```
