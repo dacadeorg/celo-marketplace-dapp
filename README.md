@@ -13,12 +13,6 @@
 npm install
 ```
 
-or 
-
-```
-yarn install
-```
-
 # Start
 
 ```
