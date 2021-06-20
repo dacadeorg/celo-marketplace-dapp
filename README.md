@@ -4,7 +4,7 @@
 3. Go to [https://celo.org/developers/faucet](https://celo.org/developers/faucet) and get tokens for the alfajores testnet.
 4. Switch to the alfajores testnet in the CeloExtensionWallet.
 
-# Preview
+# Live Demo
 [Marketplace DApp](https://dacadeorg.github.io/celo-marketplace-dapp/)
 
 # Install
