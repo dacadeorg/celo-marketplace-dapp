@@ -5,7 +5,7 @@
 4. Switch to the alfajores testnet in the CeloExtensionWallet.
 
 # Preview
-[Marketplace DApp](https://moritzfelipe.github.io/celo-marketplace-dapp/)
+[Marketplace DApp](https://dacadeorg.github.io/celo-marketplace-dapp/)
 
 # Install
 
