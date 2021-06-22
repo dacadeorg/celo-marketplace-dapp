@@ -1,5 +1,5 @@
 # Celo Marketplace Dapp
-![](https://cdn-dacade.netlify.app/content/gifs/celo_trailer_02.gif)
+![](https://github.com/dacadeorg/celo-development-101/blob/main/content/gifs/celo_trailer_02.gif)
 
 ## Description
 This is a very simple marketplace dapp where users can:
@@ -8,7 +8,7 @@ This is a very simple marketplace dapp where users can:
 * Add your own products to the dapp
 
 ## Live Demo
-[Marketplace DApp](https://dacadeorg.github.io/celo-marketplace-dapp/)
+[Marketplace Dapp](https://dacadeorg.github.io/celo-marketplace-dapp/)
 
 ## Usage
 
