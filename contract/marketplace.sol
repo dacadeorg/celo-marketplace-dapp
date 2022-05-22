@@ -15,6 +15,8 @@ interface IERC20Token {
 }
 
 contract Marketplace {
+    //Declaring the address of the contract owner
+    address internal contractOwner;
 
     uint internal productsLength = 0;
     address internal cUsdTokenAddress = 0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1;
@@ -30,6 +32,11 @@ contract Marketplace {
     }
 
     mapping (uint => Product) internal products;
+
+    	//CONSTRUCTOR: Making the contract deployer address the contract owner
+	constructor () payable  {
+		contractOwner = msg.sender;
+	}
 
     function writeProduct(
         string memory _name,
@@ -72,13 +79,27 @@ contract Marketplace {
     }
     
     function buyProduct(uint _index) public payable  {
-        require(
-          IERC20Token(cUsdTokenAddress).transferFrom(
+        //Adjusting product price for commission
+         uint adjustedPrice = (products[_index].price * 90)/100;
+         uint commissionPrice = (products[_index].price * 10)/100;
+
+        //Restricting product owner(seller) from buying his/her own product
+        require(msg.sender != products[_index].owner,"You cannot buy your own products");
+
+        //Sending 10% commission in cUsd to the contract owner
+        require(IERC20Token(cUsdTokenAddress).transferFrom(
+             msg.sender,
+             contractOwner,
+             commissionPrice
+        ), "Transfer to contract owner failed");
+
+        //Sending 90% of the product price to product owner(seller)
+        require(IERC20Token(cUsdTokenAddress).transferFrom(
             msg.sender,
             products[_index].owner,
-            products[_index].price
+            adjustedPrice
           ),
-          "Transfer failed."
+          "Transfer to product owner failed."
         );
         products[_index].sold++;
     }
