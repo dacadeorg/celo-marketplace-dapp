@@ -15,7 +15,9 @@ interface IERC20Token {
 }
 
 contract Marketplace {
+    //Declaring the address of the contract owner
     address internal contractOwner;
+
     uint internal productsLength = 0;
     address internal cUsdTokenAddress = 0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1;
 
@@ -31,7 +33,7 @@ contract Marketplace {
 
     mapping (uint => Product) internal products;
 
-     	//CONSTRUCTOR
+    	//CONSTRUCTOR: Making the contract deployer address the contract owner
 	constructor () payable  {
 		contractOwner = msg.sender;
 	}
@@ -77,27 +79,27 @@ contract Marketplace {
     }
     
     function buyProduct(uint _index) public payable  {
-        //Adjusting price for commission
+        //Adjusting product price for commission
          uint adjustedPrice = (products[_index].price * 90)/100;
-         uint commissionPrice =(products[_index].price * 10)/100;
+         uint commissionPrice = (products[_index].price * 10)/100;
 
-        //Restricting product owner(seller) from buying his/her product
-        require(msg.sender != products[_index].owner,"You cannot buy your own product");
+        //Restricting product owner(seller) from buying his/her own product
+        require(msg.sender != products[_index].owner,"You cannot buy your own products");
 
-        //Sending 10% of the product price to the contract owner
+        //Sending 10% commission in cUsd to the contract owner
         require(IERC20Token(cUsdTokenAddress).transferFrom(
              msg.sender,
              contractOwner,
              commissionPrice
         ), "Transfer to contract owner failed");
 
-        //Sending the remaining 90% to the product owner(seller)
+        //Sending 90% of the product price to product owner(seller)
         require(IERC20Token(cUsdTokenAddress).transferFrom(
             msg.sender,
             products[_index].owner,
             adjustedPrice
           ),
-          "Transfer to artwork owner failed."
+          "Transfer to product owner failed."
         );
         products[_index].sold++;
     }

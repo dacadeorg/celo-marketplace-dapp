@@ -169,7 +169,7 @@ document
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
-    notification(`🎉 You successfully added "${params[0]}" at 10% discount.When bought,you will receive 90% of its price.`)
+    notification(`🎉 You successfully added "${params[0]}" at 10% discount.You will receive 90% of its price when bought`)
     getProducts()
   })
 
